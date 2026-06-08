@@ -50,9 +50,13 @@ app.use((err, req, res, next) => {
 });
 
 // Start Server
-app.listen(PORT, () => {
-  console.log(`===================================================`);
-  console.log(` CMS Server is running on http://localhost:${PORT}`);
-  console.log(` Serving frontend from: ${path.join(__dirname, '../frontend')}`);
-  console.log(`===================================================`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`===================================================`);
+    console.log(` CMS Server is running on http://localhost:${PORT}`);
+    console.log(` Serving frontend from: ${path.join(__dirname, '../frontend')}`);
+    console.log(`===================================================`);
+  });
+}
+
+module.exports = app;

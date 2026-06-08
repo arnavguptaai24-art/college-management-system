@@ -1,9 +1,25 @@
 const { DatabaseSync } = require('node:sqlite');
 const path = require('path');
 const bcrypt = require('bcryptjs');
+const fs = require('fs');
 
 // Initialize database file
-const dbPath = path.resolve(__dirname, 'cms.db');
+let dbPath;
+if (process.env.VERCEL) {
+  const bundleDbPath = path.resolve(__dirname, 'cms.db');
+  dbPath = path.join('/tmp', 'cms.db');
+  try {
+    if (!fs.existsSync(dbPath)) {
+      console.log('Copying bundled database to /tmp...');
+      fs.copyFileSync(bundleDbPath, dbPath);
+    }
+  } catch (err) {
+    console.error('Failed to copy database file to /tmp:', err);
+  }
+} else {
+  dbPath = path.resolve(__dirname, 'cms.db');
+}
+
 const db = new DatabaseSync(dbPath);
 
 // Enable foreign keys
