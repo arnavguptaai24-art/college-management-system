@@ -1,0 +1,11 @@
+# Node dependencies
+node_modules/
+
+# Local database file
+backend/cms.db
+
+# System files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

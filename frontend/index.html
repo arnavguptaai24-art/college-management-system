@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS — BMS College of Engineering</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- Animated Gradient Mesh Background -->
+  <div class="mesh-background">
+    <div class="mesh-orb orb1"></div>
+    <div class="mesh-orb orb2"></div>
+    <div class="mesh-orb orb3"></div>
+  </div>
+
+  <!-- Global Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="spinner"></div>
+    <p>Connecting to Server...</p>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- ==================== LOGIN VIEW ==================== -->
+  <div id="loginView" class="login-view-container">
+    <div class="login-card glass-card">
+      <div class="login-header">
+        <div class="crest-container">
+          <!-- Custom Vector Seal/Crest for BMSCE -->
+          <svg class="bms-crest" viewBox="0 0 100 100" width="80" height="80">
+            <circle cx="50" cy="50" r="46" fill="none" stroke="var(--gold)" stroke-width="2"/>
+            <circle cx="50" cy="50" r="42" fill="none" stroke="var(--blue)" stroke-width="1.5" stroke-dasharray="4 2"/>
+            <polygon points="50,18 78,32 78,68 50,82 22,68 22,32" fill="none" stroke="var(--gold)" stroke-width="2"/>
+            <path d="M50,22 L72,33 L72,67 L50,78 L28,67 L28,33 Z" fill="rgba(47, 129, 247, 0.1)"/>
+            <!-- Center symbol (ML Neural Network graphic) -->
+            <circle cx="50" cy="38" r="4" fill="var(--gold)"/>
+            <circle cx="38" cy="55" r="4" fill="var(--blue)"/>
+            <circle cx="62" cy="55" r="4" fill="var(--blue)"/>
+            <line x1="50" y1="38" x2="38" y2="55" stroke="var(--gold)" stroke-width="1.5"/>
+            <line x1="50" y1="38" x2="62" y2="55" stroke="var(--gold)" stroke-width="1.5"/>
+            <line x1="38" y1="55" x2="62" y2="55" stroke="var(--blue)" stroke-width="1.5"/>
+            <text x="50" y="72" class="crest-text" text-anchor="middle" font-size="7">BMSCE</text>
+          </svg>
+        </div>
+        <h1>BMS College of Engineering</h1>
+        <p class="subtitle">Dept. of Machine Learning — College Management System</p>
+      </div>
+
+      <form id="loginForm" class="login-form">
+        <div class="form-group">
+          <label for="loginUsername">Username</label>
+          <div class="input-with-icon">
+            <i data-lucide="user"></i>
+            <input type="text" id="loginUsername" placeholder="Enter username" required value="admin">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <div class="input-with-icon">
+            <i data-lucide="lock"></i>
+            <input type="password" id="loginPassword" placeholder="Enter password" required value="admin123">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          <span>Login Securely</span>
+          <i data-lucide="arrow-right"></i>
+        </button>
+      </form>
+      
+      <div class="login-footer">
+        <p>Demo Credentials: <code>admin</code> / <code>admin123</code></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN APPLICATION LAYOUT ==================== -->
+  <div id="appLayout" class="app-layout hidden">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <svg class="sidebar-crest" viewBox="0 0 100 100" width="36" height="36">
+          <polygon points="50,15 80,30 80,70 50,85 20,70 20,30" fill="none" stroke="var(--gold)" stroke-width="2"/>
+          <circle cx="50" cy="50" r="15" fill="none" stroke="var(--blue)" stroke-width="2"/>
+          <text x="50" y="53" font-size="9" text-anchor="middle" fill="var(--gold)" font-weight="bold" font-family="Outfit">ML</text>
+        </svg>
+        <div class="brand-text">
+          <h2>BMSCE CMS</h2>
+          <span>Machine Learning Dept.</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-menu">
+        <a href="#dashboard" class="menu-item active" data-view="dashboard">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="#students" class="menu-item" data-view="students">
+          <i data-lucide="users"></i>
+          <span>Students</span>
+        </a>
+        <a href="#faculty" class="menu-item" data-view="faculty">
+          <i data-lucide="graduation-cap"></i>
+          <span>Faculty</span>
+        </a>
+        <a href="#attendance" class="menu-item" data-view="attendance">
+          <i data-lucide="calendar-check"></i>
+          <span>Attendance</span>
+        </a>
+        <a href="#about" class="menu-item" data-view="about">
+          <i data-lucide="info"></i>
+          <span>About Project</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-user-panel">
+        <div class="user-info">
+          <div class="avatar">
+            <i data-lucide="shield-check"></i>
+          </div>
+          <div class="user-details">
+            <p id="sessionUser">Admin User</p>
+            <span id="sessionRole">Administrator</span>
+          </div>
+        </div>
+        <button id="logoutBtn" class="logout-btn" title="Logout">
+          <i data-lucide="log-out"></i>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Header -->
+      <header class="content-header">
+        <div class="header-title-container">
+          <h1 id="pageTitle" class="academic-title">Dashboard</h1>
+          <p id="pageSubTitle" class="subtitle">System Overview and Statistical Summaries</p>
+        </div>
+        <div class="header-actions">
+          <span class="badge" id="authBadge">
+            <span class="badge-dot"></span>
+            Authenticated
+          </span>
+          <div class="header-clock" id="headerClock">12:00:00 PM</div>
+        </div>
+      </header>
+
+      <!-- ==================== VIEW: DASHBOARD ==================== -->
+      <section id="view-dashboard" class="view-section">
+        <!-- Stat Cards -->
+        <div class="metrics-grid">
+          <div class="stat-card glass-card">
+            <div class="card-glow blue-glow"></div>
+            <div class="stat-icon icon-blue">
+              <i data-lucide="users"></i>
+            </div>
+            <div class="stat-content">
+              <h3>Total Students</h3>
+              <p class="stat-value" id="statTotalStudents">0</p>
+            </div>
+          </div>
+
+          <div class="stat-card glass-card">
+            <div class="card-glow gold-glow"></div>
+            <div class="stat-icon icon-gold">
+              <i data-lucide="graduation-cap"></i>
+            </div>
+            <div class="stat-content">
+              <h3>Total Faculty</h3>
+              <p class="stat-value" id="statTotalFaculty">0</p>
+            </div>
+          </div>
+
+          <div class="stat-card glass-card">
+            <div class="card-glow teal-glow"></div>
+            <div class="stat-icon icon-teal">
+              <i data-lucide="award"></i>
+            </div>
+            <div class="stat-content">
+              <h3>Average Marks</h3>
+              <p class="stat-value" id="statAvgMarks">0.00%</p>
+            </div>
+          </div>
+
+          <div class="stat-card glass-card">
+            <div class="card-glow teal-glow"></div>
+            <div class="stat-icon icon-teal" style="background: rgba(63, 185, 80, 0.1); color: var(--teal);">
+              <i data-lucide="calendar-check"></i>
+            </div>
+            <div class="stat-content">
+              <h3>Avg Attendance</h3>
+              <p class="stat-value" id="statAvgAttendance">0.00%</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashboard Charts & Feed Grid -->
+        <div class="dashboard-grid">
+          <!-- Chart Card -->
+          <div class="chart-card glass-card">
+            <div class="card-header">
+              <h2>Student Course Distribution</h2>
+              <span>Registrations by Academic Program</span>
+            </div>
+            <div class="chart-container">
+              <canvas id="courseChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Recent Additions Feed -->
+          <div class="feed-card glass-card">
+            <div class="card-header">
+              <h2>Recent Activities</h2>
+              <span>Newly enrolled student & faculty profiles</span>
+            </div>
+            <ul class="activity-feed" id="recentActivityList">
+              <!-- Dynamically populated -->
+              <li class="feed-empty">No recent activities found</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW: STUDENTS ==================== -->
+      <section id="view-students" class="view-section hidden">
+        <div class="toolbar glass-card">
+          <div class="toolbar-filters">
+            <div class="search-box">
+              <i data-lucide="search"></i>
+              <input type="text" id="studentSearch" placeholder="Search by name, USN, course...">
+            </div>
+            
+            <div class="filter-group">
+              <select id="studentCourseFilter">
+                <option value="">All Courses</option>
+                <option value="Machine Learning">Machine Learning</option>
+                <option value="Artificial Intelligence">Artificial Intelligence</option>
+                <option value="Data Science">Data Science</option>
+              </select>
+              
+              <select id="studentSemesterFilter">
+                <option value="">All Semesters</option>
+                <option value="1">1st Semester</option>
+                <option value="2">2nd Semester</option>
+                <option value="3">3rd Semester</option>
+                <option value="4">4th Semester</option>
+                <option value="5">5th Semester</option>
+                <option value="6">6th Semester</option>
+                <option value="7">7th Semester</option>
+                <option value="8">8th Semester</option>
+              </select>
+
+              <select id="studentSectionFilter">
+                <option value="">All Sections</option>
+                <option value="A">Section A</option>
+                <option value="B">Section B</option>
+                <option value="C">Section C</option>
+              </select>
+
+              <button id="studentResetFilters" class="btn btn-secondary btn-icon-only" title="Reset Filters">
+                <i data-lucide="refresh-cw"></i>
+              </button>
+            </div>
+          </div>
+
+          <button id="addStudentBtn" class="btn btn-primary">
+            <i data-lucide="user-plus"></i>
+            <span>Add Student</span>
+          </button>
+        </div>
+
+        <div class="table-container glass-card">
+          <table class="data-table" id="studentTable">
+            <thead>
+              <tr>
+                <th style="width: 15%">USN</th>
+                <th style="width: 25%">Name</th>
+                <th style="width: 25%">Course</th>
+                <th style="width: 12%; text-align: center;">Sem / Sec</th>
+                <th style="width: 13%; text-align: right;">Marks</th>
+                <th style="width: 15%; text-align: center;">Attendance</th>
+                <th style="width: 10%; text-align: center;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="studentTableBody">
+              <!-- Dynamic Rows -->
+            </tbody>
+          </table>
+          
+          <!-- Table Pagination -->
+          <div class="pagination" id="studentPagination">
+            <button class="pag-btn" id="studentPrevPage"><i data-lucide="chevron-left"></i></button>
+            <span class="pag-info" id="studentPageInfo">Page 1 of 1</span>
+            <button class="pag-btn" id="studentNextPage"><i data-lucide="chevron-right"></i></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW: FACULTY ==================== -->
+      <section id="view-faculty" class="view-section hidden">
+        <div class="toolbar glass-card">
+          <div class="toolbar-filters">
+            <div class="search-box">
+              <i data-lucide="search"></i>
+              <input type="text" id="facultySearch" placeholder="Search by name, ID, subject...">
+            </div>
+            
+            <div class="filter-group">
+              <select id="facultyDeptFilter">
+                <option value="">All Departments</option>
+                <option value="Machine Learning">Machine Learning</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Information Science">Information Science</option>
+              </select>
+
+              <button id="facultyResetFilters" class="btn btn-secondary btn-icon-only" title="Reset Filters">
+                <i data-lucide="refresh-cw"></i>
+              </button>
+            </div>
+          </div>
+
+          <button id="addFacultyBtn" class="btn btn-primary">
+            <i data-lucide="plus-circle"></i>
+            <span>Add Faculty</span>
+          </button>
+        </div>
+
+        <div class="table-container glass-card">
+          <table class="data-table" id="facultyTable">
+            <thead>
+              <tr>
+                <th style="width: 15%">Employee ID</th>
+                <th style="width: 25%">Name</th>
+                <th style="width: 25%">Department</th>
+                <th style="width: 15%">Subject Specialization</th>
+                <th style="width: 15%; text-align: right;">Salary</th>
+                <th style="width: 10%; text-align: center;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="facultyTableBody">
+              <!-- Dynamic Rows -->
+            </tbody>
+          </table>
+
+          <!-- Table Pagination -->
+          <div class="pagination" id="facultyPagination">
+            <button class="pag-btn" id="facultyPrevPage"><i data-lucide="chevron-left"></i></button>
+            <span class="pag-info" id="facultyPageInfo">Page 1 of 1</span>
+            <button class="pag-btn" id="facultyNextPage"><i data-lucide="chevron-right"></i></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW: ATTENDANCE ==================== -->
+      <section id="view-attendance" class="view-section hidden">
+        <div class="toolbar glass-card">
+          <div class="toolbar-filters">
+            <div class="filter-group">
+              <input type="date" id="attendanceDate" value="2026-06-08" style="background: rgba(13, 17, 23, 0.5); border: 1px solid var(--border-dim); border-radius: 8px; padding: 10px; color: var(--text-main); font-family: var(--font-sans); font-size: 0.85rem;">
+
+              <select id="attendanceCourseFilter" style="background: rgba(13, 17, 23, 0.5); border: 1px solid var(--border-dim); border-radius: 8px; padding: 10px 32px 10px 14px; color: var(--text-main); font-family: var(--font-sans); font-size: 0.85rem; appearance: none; background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%238b949e' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7' /%3E%3C/svg%3E&quot;); background-repeat: no-repeat; background-position: right 12px center; background-size: 12px;">
+                <option value="Machine Learning">Machine Learning</option>
+                <option value="Artificial Intelligence">Artificial Intelligence</option>
+                <option value="Data Science">Data Science</option>
+              </select>
+
+              <select id="attendanceSemesterFilter" style="background: rgba(13, 17, 23, 0.5); border: 1px solid var(--border-dim); border-radius: 8px; padding: 10px 32px 10px 14px; color: var(--text-main); font-family: var(--font-sans); font-size: 0.85rem; appearance: none; background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%238b949e' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7' /%3E%3C/svg%3E&quot;); background-repeat: no-repeat; background-position: right 12px center; background-size: 12px;">
+                <option value="1">1st Semester</option>
+                <option value="2">2nd Semester</option>
+                <option value="3">3rd Semester</option>
+                <option value="4">4th Semester</option>
+                <option value="5">5th Semester</option>
+                <option value="6" selected>6th Semester</option>
+                <option value="7">7th Semester</option>
+                <option value="8">8th Semester</option>
+              </select>
+
+              <select id="attendanceSectionFilter" style="background: rgba(13, 17, 23, 0.5); border: 1px solid var(--border-dim); border-radius: 8px; padding: 10px 32px 10px 14px; color: var(--text-main); font-family: var(--font-sans); font-size: 0.85rem; appearance: none; background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%238b949e' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7' /%3E%3C/svg%3E&quot;); background-repeat: no-repeat; background-position: right 12px center; background-size: 12px;">
+                <option value="A">Section A</option>
+                <option value="B">Section B</option>
+                <option value="C">Section C</option>
+              </select>
+
+              <button id="loadAttendanceBtn" class="btn btn-secondary">
+                <i data-lucide="eye"></i>
+                <span>Load Class Sheet</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-container glass-card">
+          <form id="attendanceForm">
+            <table class="data-table" id="attendanceTable">
+              <thead>
+                <tr>
+                  <th style="width: 25%">USN</th>
+                  <th style="width: 35%">Student Name</th>
+                  <th style="width: 40%; text-align: center;">Attendance Status</th>
+                </tr>
+              </thead>
+              <tbody id="attendanceTableBody">
+                <tr>
+                  <td colspan="3" class="table-empty">
+                    Select class criteria and load sheet to register attendance.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            
+            <div class="pagination hidden" id="attendanceActionsBar" style="justify-content: center; padding: 20px; border-top: 1px solid var(--border-dim);">
+              <button type="submit" class="btn btn-primary" id="saveAttendanceBtn" style="padding: 12px 30px;">
+                <i data-lucide="save"></i>
+                <span>Save Class Attendance</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW: ABOUT ==================== -->
+      <section id="view-about" class="view-section hidden">
+        <div class="about-grid">
+          <!-- Left: Details -->
+          <div class="about-card glass-card">
+            <div class="about-section-block">
+              <h2 class="section-title">Institutional Context</h2>
+              <p>The College Management System is designed specifically for the <strong>Department of Machine Learning</strong> at <strong>BMS College of Engineering</strong>, Bangalore. The system represents a digital transition from legacy file systems to an interactive RESTful schema. It offers secure credentials and automated metrics mapping.</p>
+            </div>
+
+            <div class="about-section-block">
+              <h2 class="section-title">Application Tech Stack</h2>
+              <ul class="tech-stack-list">
+                <li>
+                  <div class="tech-icon"><i data-lucide="terminal"></i></div>
+                  <div class="tech-info">
+                    <strong>Backend System:</strong> Node.js & Express.js server providing RESTful endpoints.
+                  </div>
+                </li>
+                <li>
+                  <div class="tech-icon"><i data-lucide="database"></i></div>
+                  <div class="tech-info">
+                    <strong>Storage Engine:</strong> SQLite persistent database accessed via <code>better-sqlite3</code> for synchronous operations.
+                  </div>
+                </li>
+                <li>
+                  <div class="tech-icon"><i data-lucide="key-round"></i></div>
+                  <div class="tech-info">
+                    <strong>Security Layer:</strong> JWT-based authorization header policies combined with bcrypt hashing.
+                  </div>
+                </li>
+                <li>
+                  <div class="tech-icon"><i data-lucide="layout"></i></div>
+                  <div class="tech-info">
+                    <strong>Frontend Interface:</strong> SPA compiled with native ES6 classes, CSS variables, and dynamic CSS layouts.
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Right: OOP Concepts -->
+          <div class="about-card glass-card">
+            <div class="about-section-block">
+              <h2 class="section-title">Object-Oriented Programming (OOP)</h2>
+              <p>Consistent with the original system design, the front-end features a structure mirroring Java classes. We employ ES6 classes to enforce logical encapsulation, modular inheritance, and type structures:</p>
+              
+              <div class="oop-concept">
+                <h3>1. Encapsulation</h3>
+                <p>Data models for <code>Person</code>, <code>Student</code>, and <code>Faculty</code> encapsulate attributes and formatting logic (like salary and marks rendering) into cohesive code units.</p>
+              </div>
+
+              <div class="oop-concept">
+                <h3>2. Inheritance</h3>
+                <p>The base class <code>Person</code> defines common fields (<code>id</code>, <code>name</code>, <code>created_at</code>) which are inherited by <code>Student</code> and <code>Faculty</code>, avoiding code repetition.</p>
+              </div>
+
+              <div class="oop-concept">
+                <h3>3. Polymorphism / Extensibility</h3>
+                <p>Objects are loaded through API responses and dynamically instantiated. They provide polymorphic helper methods that adapt output structures based on the target class type.</p>
+              </div>
+            </div>
+            
+            <div class="about-section-block">
+              <h2 class="section-title">Project Team Contributions</h2>
+              <div class="contributor-table-container">
+                <table class="contributor-table">
+                  <thead>
+                    <tr>
+                      <th>Team Member</th>
+                      <th>Role & Contributions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Adithya Reddy</strong></td>
+                      <td>Project Planning, Architecture Diagrams, Documentations</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Daksha Gupta</strong></td>
+                      <td>Class Designs, Schema Models, Logic Diagrams</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Arnav Gupta</strong></td>
+                      <td>Full Stack Development, API Routes, SPA Design, Testing, Debugging</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Institutional Footer -->
+      <footer class="app-footer">
+        <p>© 2026 BMS College of Engineering · Department of Machine Learning · Academic Year 2025-2026</p>
+      </footer>
+    </main>
+  </div>
+
+  <!-- ==================== MODAL: ADD / EDIT STUDENT ==================== -->
+  <div id="studentModal" class="modal-overlay hidden">
+    <div class="modal-card glass-card">
+      <div class="modal-header">
+        <h2 id="studentModalTitle">Add New Student</h2>
+        <button class="modal-close" id="studentModalCloseBtn"><i data-lucide="x"></i></button>
+      </div>
+      <form id="studentForm" class="modal-form">
+        <input type="hidden" id="studentFormId">
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="studentFormName">Full Name</label>
+            <input type="text" id="studentFormName" placeholder="e.g. Rahul Sharma" required>
+          </div>
+          <div class="form-group">
+            <label for="studentFormUsn">USN (University Seat Number)</label>
+            <input type="text" id="studentFormUsn" placeholder="e.g. 1BM22ML001" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="studentFormCourse">Academic Course</label>
+            <select id="studentFormCourse" required>
+              <option value="Machine Learning">Machine Learning</option>
+              <option value="Artificial Intelligence">Artificial Intelligence</option>
+              <option value="Data Science">Data Science</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="studentFormSemester">Semester</label>
+            <select id="studentFormSemester" required>
+              <option value="1">1st Semester</option>
+              <option value="2">2nd Semester</option>
+              <option value="3">3rd Semester</option>
+              <option value="4">4th Semester</option>
+              <option value="5">5th Semester</option>
+              <option value="6">6th Semester</option>
+              <option value="7">7th Semester</option>
+              <option value="8">8th Semester</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="studentFormSection">Section</label>
+            <input type="text" id="studentFormSection" placeholder="e.g. A" max-length="2" required>
+          </div>
+          <div class="form-group">
+            <label for="studentFormMarks">Academic Marks (%)</label>
+            <input type="number" id="studentFormMarks" placeholder="e.g. 85.50" step="0.01" min="0" max="100" required>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="studentCancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="studentSaveBtn">Save Student</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: ADD / EDIT FACULTY ==================== -->
+  <div id="facultyModal" class="modal-overlay hidden">
+    <div class="modal-card glass-card">
+      <div class="modal-header">
+        <h2 id="facultyModalTitle">Add New Faculty Member</h2>
+        <button class="modal-close" id="facultyModalCloseBtn"><i data-lucide="x"></i></button>
+      </div>
+      <form id="facultyForm" class="modal-form">
+        <input type="hidden" id="facultyFormId">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="facultyFormName">Full Name</label>
+            <input type="text" id="facultyFormName" placeholder="e.g. Dr. Latha Prasad" required>
+          </div>
+          <div class="form-group">
+            <label for="facultyFormEmpId">Employee ID</label>
+            <input type="text" id="facultyFormEmpId" placeholder="e.g. FML001" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="facultyFormDept">Department</label>
+            <select id="facultyFormDept" required>
+              <option value="Machine Learning">Machine Learning</option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Information Science">Information Science</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="facultyFormSubject">Subject Specialization</label>
+            <input type="text" id="facultyFormSubject" placeholder="e.g. Deep Learning" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group" style="flex: 0 0 50%">
+            <label for="facultyFormSalary">Monthly Salary (INR)</label>
+            <input type="number" id="facultyFormSalary" placeholder="e.g. 120000" step="0.01" min="0" required>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="facultyCancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="facultySaveBtn">Save Faculty</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: DELETE CONFIRMATION ==================== -->
+  <div id="deleteModal" class="modal-overlay hidden">
+    <div class="modal-card glass-card modal-confirm">
+      <div class="confirm-icon"><i data-lucide="alert-triangle"></i></div>
+      <h2>Confirm Record Deletion</h2>
+      <p id="deleteMessage">Are you sure you want to delete this record? This action is permanent and cannot be undone.</p>
+      
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="deleteCancelBtn">Cancel</button>
+        <button type="button" class="btn btn-danger" id="deleteConfirmBtn">Delete Record</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application logic -->
+  <script src="app.js"></script>
+</body>
+</html>
